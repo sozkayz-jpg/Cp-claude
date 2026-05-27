@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Header from "./components/Header";
 import HeroSection from "./sections/HeroSection";
 import ProblemSolutionSection from "./sections/ProblemSolutionSection";
@@ -8,47 +9,92 @@ import SocialProofSection from "./sections/SocialProofSection";
 import QuickFaqSection from "./sections/QuickFaqSection";
 import FinalCtaSection from "./sections/FinalCtaSection";
 import Footer from "./components/Footer";
+import JsonLd from "@/components/JsonLd";
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carplaygo.fr";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://carplaygo.fr/#website",
-      url: "https://carplaygo.fr",
+      "@id": `${baseUrl}/#website`,
+      url: baseUrl,
       name: "CarplayGO",
       description: "Adaptateur CarPlay sans fil plug & play",
+      inLanguage: "fr-FR",
       publisher: {
         "@type": "Organization",
-        "@id": "https://carplaygo.fr/#organization",
+        "@id": `${baseUrl}/#organization`,
       },
     },
     {
       "@type": "Organization",
-      "@id": "https://carplaygo.fr/#organization",
+      "@id": `${baseUrl}/#organization`,
       name: "CarplayGO",
-      url: "https://carplaygo.fr",
+      url: baseUrl,
       logo: {
         "@type": "ImageObject",
-        url: "https://carplaygo.fr/logo.png",
+        url: `${baseUrl}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "support@carplaygo.fr",
+        contactType: "customer service",
+        areaServed: "FR",
+        availableLanguage: ["French"],
       },
     },
     {
       "@type": "Product",
       name: "CarplayGO — Adaptateur CarPlay sans fil",
-      image: "https://carplaygo.fr/product.jpg",
+      image: `${baseUrl}/images/product-carplay.jpg`,
       description:
-        "Transformez votre CarPlay filaire en CarPlay sans fil en 30 secondes.",
+        "Transformez votre CarPlay filaire en CarPlay sans fil en 30 secondes. Plug & play, compatible iPhone, livraison 24h.",
       brand: {
         "@type": "Brand",
         name: "CarplayGO",
       },
+      sku: "CPG-001",
       offers: {
         "@type": "Offer",
-        url: "https://carplaygo.fr/produit",
+        url: `${baseUrl}/produit`,
         priceCurrency: "EUR",
         price: "89.00",
+        priceValidUntil: "2026-12-31",
         availability: "https://schema.org/InStock",
+        hasMerchantReturnPolicy: {
+          "@type": "MerchantReturnPolicy",
+          returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+          merchantReturnDays: 30,
+          returnMethod: "https://schema.org/ReturnByMail",
+          returnFees: "https://schema.org/FreeReturn",
+        },
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingRate: {
+            "@type": "MonetaryAmount",
+            value: "0",
+            currency: "EUR",
+          },
+          deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: {
+              "@type": "QuantitativeValue",
+              minValue: 0,
+              maxValue: 1,
+              unitCode: "DAY",
+            },
+            transitTime: {
+              "@type": "QuantitativeValue",
+              minValue: 2,
+              maxValue: 4,
+              unitCode: "DAY",
+            },
+          },
+        },
         seller: {
           "@type": "Organization",
           name: "CarplayGO",
@@ -58,6 +104,8 @@ const jsonLd = {
         "@type": "AggregateRating",
         ratingValue: "4.8",
         reviewCount: "2341",
+        bestRating: "5",
+        worstRating: "1",
       },
     },
   ],
@@ -66,10 +114,7 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <Header />
       <main>
         <HeroSection />

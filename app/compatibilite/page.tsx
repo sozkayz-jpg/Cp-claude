@@ -2,9 +2,12 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Compatibilité",
+  title: "Compatibilité — CarplayGO",
   description:
     "Vérifiez la compatibilité de CarplayGO avec votre véhicule. Liste des marques et modèles supportés.",
+  alternates: {
+    canonical: "/compatibilite",
+  },
 };
 
 const brands = [

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import JsonLd from "@/components/JsonLd";
 
 const brandModels: Record<string, { name: string; models: string[] }> = {
   audi: {
@@ -124,8 +125,11 @@ export async function generateMetadata({
   if (!brand) return { title: "Non trouvé" };
 
   return {
-    title: `${brand.name} — Compatibilité`,
-    description: `Liste des modèles ${brand.name} compatibles avec CarplayGO.`,
+    title: `${brand.name} — Compatibilité CarplayGO`,
+    description: `Liste des modèles ${brand.name} compatibles avec CarplayGO. Vérifiez si votre véhicule est supporté.`,
+    alternates: {
+      canonical: `/compatibilite/${marque}`,
+    },
   };
 }
 
@@ -138,33 +142,63 @@ export default async function BrandPage({
   const brand = brandModels[marque];
   if (!brand) notFound();
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carplaygo.fr";
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Accueil",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Compatibilité",
+        item: `${baseUrl}/compatibilite`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: brand.name,
+        item: `${baseUrl}/compatibilite/${marque}`,
+      },
+    ],
+  };
+
   return (
-    <main className="mx-auto max-w-7xl px-4 py-24">
-      <h1 className="mb-4 font-heading text-3xl font-bold md:text-4xl">
-        {brand.name}
-      </h1>
-      <p className="mb-12 text-muted-foreground">
-        {brand.models.length} modèles compatibles avec CarplayGO.
-      </p>
+    <>
+      <JsonLd data={breadcrumbSchema} />
+      <main className="mx-auto max-w-7xl px-4 py-24">
+        <h1 className="mb-4 font-heading text-3xl font-bold md:text-4xl">
+          {brand.name}
+        </h1>
+        <p className="mb-12 text-muted-foreground">
+          {brand.models.length} modèles compatibles avec CarplayGO.
+        </p>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {brand.models.map((model) => (
-          <div
-            key={model}
-            className="rounded-xl border border-border bg-card p-4"
-          >
-            <p className="font-medium">{model}</p>
-            <p className="mt-1 text-sm text-green-400">Compatible</p>
-          </div>
-        ))}
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {brand.models.map((model) => (
+            <div
+              key={model}
+              className="rounded-xl border border-border bg-card p-4"
+            >
+              <p className="font-medium">{model}</p>
+              <p className="mt-1 text-sm text-green-400">Compatible</p>
+            </div>
+          ))}
+        </div>
 
-      <Link
-        href="/compatibilite"
-        className="mt-12 inline-block text-sm text-primary hover:underline"
-      >
-        ← Retour aux marques
-      </Link>
-    </main>
+        <Link
+          href="/compatibilite"
+          className="mt-12 inline-block text-sm text-primary hover:underline"
+        >
+          ← Retour aux marques
+        </Link>
+      </main>
+    </>
   );
 }

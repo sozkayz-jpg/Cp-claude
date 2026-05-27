@@ -1,0 +1,24 @@
+{
+  "name": "CarplayGO — CarPlay sans fil",
+  "short_name": "CarplayGO",
+  "description": "Transformez votre CarPlay filaire en CarPlay sans fil en 30 secondes. Plug & play.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/images/product-carplay.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "fr"
+}

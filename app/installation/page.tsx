@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Guide d'installation — CarplayGO",
   description:
     "Installez CarplayGO en 2 minutes. Notre guide étape par étape avec vidéo et checklist.",
+  alternates: {
+    canonical: "/installation",
+  },
 };
 
 const steps = [

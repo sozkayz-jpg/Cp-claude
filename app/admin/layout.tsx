@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 const adminNav = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
@@ -27,7 +35,7 @@ export default async function AdminLayout({
     <div className="flex min-h-screen">
       <aside className="hidden w-64 border-r border-border bg-card p-6 lg:block">
         <Link href="/admin" className="mb-8 block font-heading text-xl font-bold">
-          Carplay<span className="text-primary">GO</span> Admin
+          CarplayGO Admin
         </Link>
         <nav className="space-y-1">
           {adminNav.map((item) => (

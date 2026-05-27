@@ -1,9 +1,13 @@
 import { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "FAQ — CarplayGO",
   description:
     "Toutes les réponses à vos questions sur CarplayGO : compatibilité, installation, livraison, garantie et retours.",
+  alternates: {
+    canonical: "/faq",
+  },
 };
 
 const faqs = [
@@ -49,26 +53,42 @@ const faqs = [
   },
 ];
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function FaqPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="mb-4 font-heading text-4xl font-bold">
-        Questions fréquentes
-      </h1>
-      <p className="mb-12 text-muted-foreground">
-        Tout ce que vous devez savoir sur CarplayGO.
-      </p>
+    <>
+      <JsonLd data={faqSchema} />
+      <main className="mx-auto max-w-3xl px-6 py-24">
+        <h1 className="mb-4 font-heading text-4xl font-bold">
+          Questions fréquentes
+        </h1>
+        <p className="mb-12 text-muted-foreground">
+          Tout ce que vous devez savoir sur CarplayGO.
+        </p>
 
-      <div className="space-y-8">
-        {faqs.map((faq, i) => (
-          <div key={i} className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="mb-2 font-heading text-lg font-semibold">
-              {faq.question}
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </main>
+        <div className="space-y-8">
+          {faqs.map((faq, i) => (
+            <div key={i} className="rounded-2xl border border-border bg-card p-6">
+              <h2 className="mb-2 font-heading text-lg font-semibold">
+                {faq.question}
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </main>
+    </>
   );
 }

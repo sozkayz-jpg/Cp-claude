@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Blog — CarplayGO",
   description:
     "Conseils, guides et actualités sur la connectivité automobile et CarPlay sans fil.",
+  alternates: {
+    canonical: "/blog",
+  },
 };
 
 interface BlogPost {

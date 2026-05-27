@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import JsonLd from "@/components/JsonLd";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -28,6 +29,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} — CarplayGO Blog`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      publishedTime: post.publishedAt?.toISOString(),
+      authors: ["CarplayGO"],
+    },
   };
 }
 
@@ -39,36 +50,69 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post || !post.isPublished) notFound();
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carplaygo.fr";
+
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    url: `${baseUrl}/blog/${slug}`,
+    datePublished: post.publishedAt?.toISOString(),
+    dateModified: post.updatedAt?.toISOString() || post.publishedAt?.toISOString(),
+    author: {
+      "@type": "Organization",
+      name: "CarplayGO",
+      url: baseUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "CarplayGO",
+      url: baseUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/og-image.jpg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/blog/${slug}`,
+    },
+  };
+
   return (
-    <main className="mx-auto max-w-3xl px-6 py-24">
-      <Link
-        href="/blog"
-        className="mb-6 inline-block text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Retour au blog
-      </Link>
+    <>
+      <JsonLd data={blogSchema} />
+      <main className="mx-auto max-w-3xl px-6 py-24">
+        <Link
+          href="/blog"
+          className="mb-6 inline-block text-sm text-muted-foreground hover:text-foreground"
+        >
+          ← Retour au blog
+        </Link>
 
-      <span className="mb-4 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-        {post.category}
-      </span>
+        <span className="mb-4 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+          {post.category}
+        </span>
 
-      <h1 className="mb-4 font-heading text-3xl font-bold sm:text-4xl">
-        {post.title}
-      </h1>
+        <h1 className="mb-4 font-heading text-3xl font-bold sm:text-4xl">
+          {post.title}
+        </h1>
 
-      <p className="mb-8 text-sm text-muted-foreground">
-        {post.publishedAt
-          ? new Date(post.publishedAt).toLocaleDateString("fr-FR")
-          : ""}
-      </p>
+        <p className="mb-8 text-sm text-muted-foreground">
+          {post.publishedAt
+            ? new Date(post.publishedAt).toLocaleDateString("fr-FR")
+            : ""}
+        </p>
 
-      <div className="prose prose-invert max-w-none">
-        {post.body.split("\n").map((paragraph, i) => (
-          <p key={i} className="mb-4 leading-relaxed text-muted-foreground">
-            {paragraph}
-          </p>
-        ))}
-      </div>
-    </main>
+        <div className="prose prose-invert max-w-none">
+          {post.body.split("\n").map((paragraph, i) => (
+            <p key={i} className="mb-4 leading-relaxed text-muted-foreground">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </main>
+    </>
   );
 }

@@ -9,11 +9,23 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/compte", "/api/webhooks"],
+        disallow: [
+          "/admin",
+          "/compte",
+          "/auth",
+          "/checkout",
+          "/api",
+        ],
       },
       {
         userAgent: "GPTBot",
         allow: "/",
+        disallow: "/admin",
+      },
+      {
+        userAgent: "CCBot",
+        allow: "/",
+        disallow: "/admin",
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
